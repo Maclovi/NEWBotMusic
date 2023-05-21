@@ -9,11 +9,11 @@ from loguru import logger
 from random import choice
 from os import environ
 
-# Configure ligging
+# Configure logging
 logger.add("logs.log", format="{time} {level} {message}",
            level="INFO", rotation="10 KB", compression="zip")
 
-
+# Initialize bot and dispatcher
 bot = Bot(environ["API_TOKEN"])
 dp = Dispatcher(bot)
 
