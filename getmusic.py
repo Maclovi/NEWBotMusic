@@ -12,15 +12,15 @@ class YouTubeMusic:
 
     def __init__(self, url: str):
 
-    # Экземпляр объекта YouTube
-    self.yt: object = YouTube(url)
+        # Экземпляр объекта YouTube
+        self.yt: object = YouTube(url)
 
-    self.views: int = self.yt.views  # Просмотры
-    self.pub: int = self.yt.publish_date.year  # Год публикации
-    self.thumb: str = self.yt.thumbnail_url  # Заглавная картинка
-    self.title: str = self.yt.title  # Название песни
+        self.views: int = self.yt.views  # Просмотры
+        self.pub: int = self.yt.publish_date.year  # Год публикации
+        self.thumb: str = self.yt.thumbnail_url  # Заглавная картинка
+        self.title: str = self.yt.title  # Название песни
 
-    self.audio = self.yt.streams.get_audio_only()  # Берёт itag 140
+        self.audio = self.yt.streams.get_audio_only()  # Берёт itag 140
 
 
 def check(self) -> bool | object:
