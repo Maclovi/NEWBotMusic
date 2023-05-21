@@ -13,6 +13,7 @@ from os import environ
 logger.add("logs.log", format="{time} {level} {message}",
            level="INFO", rotation="10 KB", compression="zip")
 
+
 bot = Bot(environ["API_TOKEN"])
 dp = Dispatcher(bot)
 
@@ -150,7 +151,6 @@ async def main(message: types.Message) -> None:
 
     try:
         audio = YouTubeMusic(message.text)
-
 
         if (response := audio.check()) == True:
             answer = await message.answer("Good.\nСкачивание началось...")
