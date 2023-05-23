@@ -94,11 +94,11 @@ class Buttons:
 @dp.message_handler(commands=["info", "start"])
 async def start_commands(message: types.Message) -> None:
     await message.delete()
+
     answer = await message.answer(
             text=Text.description.format(message.from_user.first_name),
             parse_mode="html", reply_markup=Buttons.kb
             )
-
     if message.text == "/start":
         await bot.send_message(
                 chat_id=Secret.channel_user,
@@ -107,9 +107,14 @@ async def start_commands(message: types.Message) -> None:
                                            message.from_user.last_name,
                                            message.from_user.username)
                 )
-
     await sleep(180)
-    await bot.delete_message(message.chat.id, answer.message_id)
+
+    # На случай, если пользователь удалит раньше сообщение
+    try:
+        await bot.delete_message(message.chat.id, answer.message_id)
+    except:
+        pass 
+    
 
 
 @dp.message_handler(filters.Text(equals="Помощь🚒"))
@@ -124,7 +129,11 @@ async def legal(message: types.Message) -> None:
     answer = await message.answer(text=Text.legal, parse_mode="html")
     await sleep(30)
 
-    await bot.delete_message(message.chat.id, answer.message_id)
+    # На случай, если пользователь удалит раньше сообщение
+    try:
+        await bot.delete_message(message.chat.id, answer.message_id)
+    except:
+        pass
 
 
 @dp.message_handler(filters.Text(equals="Свой бот🤖"))
@@ -134,7 +143,11 @@ async def own_bot(message: types.Message) -> None:
     answer = await message.answer(text=Text.own_bot, parse_mode="html")
     await sleep(30)
 
-    await bot.delete_message(message.chat.id, answer.message_id)
+    # На случай, если пользователь удалит раньше сообщение
+    try:
+        await bot.delete_message(message.chat.id, answer.message_id)
+    except:
+        pass
 
 
 @dp.message_handler(filters.Text(equals="Шар предсказания🎱"))
@@ -144,7 +157,11 @@ async def magic_ball(message: types.Message) -> None:
     answer = await message.answer(text=choice(Text.answer_for_magicball))
     await sleep(7)
 
-    await bot.delete_message(message.chat.id, answer.message_id)
+    # На случай, если пользователь удалит раньше сообщение
+    try:
+        await bot.delete_message(message.chat.id, answer.message_id)
+    except:
+        pass
 
 
 @dp.message_handler(filters.Text(startswith=("https://youtu.be/",
@@ -179,7 +196,11 @@ async def main(message: types.Message) -> None:
                                parse_mode="html")
         await sleep(10)
 
-    await bot.delete_message(message.chat.id, answer.message_id)
+    # На случай, если пользователь удалит раньше сообщение
+    try:
+        await bot.delete_message(message.chat.id, answer.message_id)
+    except:
+        pass  
 
 
 if __name__ == "__main__":
