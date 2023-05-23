@@ -18,10 +18,6 @@ bot = Bot(environ["API_TOKEN"])
 dp = Dispatcher(bot)
 
 
-async def on_startup(_):
-    print("Гамарджоба друг мой, можешь отдохнуть, я бот запустил.")
-
-
 class Secret:
     channel_user = environ["CHANNEL_USER"]
     channel_music = environ["CHANNEL_MUSIC"]
@@ -83,12 +79,23 @@ class Text:
 class Buttons:
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True,
                                    one_time_keyboard=False)
-
     kb1 = types.KeyboardButton('Помощь🚒')
     kb2 = types.KeyboardButton('Легально?⚠')
     kb3 = types.KeyboardButton('Свой бот🤖')
     kb4 = types.KeyboardButton('Шар предсказания🎱')
     kb.add(kb4).add(kb1, kb2, kb3)
+
+
+class SecondaryFunctions:
+    async def on_startup(self, _) -> None:
+        print("Гамарджоба друг мой, можешь отдохнуть, я бот запустил.")
+
+
+    async def del_message(self, message: types.Message) -> None:
+        try:
+            await bot.delete_message(message.chat.id, message.message_id)
+        except:
+            pass
 
 
 @dp.message_handler(commands=["info", "start"])
@@ -109,13 +116,8 @@ async def start_commands(message: types.Message) -> None:
                 )
     await sleep(180)
 
-    # На случай, если пользователь удалит раньше сообщение
-    try:
-        await bot.delete_message(message.chat.id, answer.message_id)
-    except:
-        pass 
+    await SecondaryFunctions().del_message(answer) 
     
-
 
 @dp.message_handler(filters.Text(equals="Помощь🚒"))
 async def helper(message: types.Message) -> None:
@@ -125,43 +127,28 @@ async def helper(message: types.Message) -> None:
 @dp.message_handler(filters.Text(equals="Легально?⚠"))
 async def legal(message: types.Message) -> None:
     await message.delete()
-
     answer = await message.answer(text=Text.legal, parse_mode="html")
     await sleep(30)
 
-    # На случай, если пользователь удалит раньше сообщение
-    try:
-        await bot.delete_message(message.chat.id, answer.message_id)
-    except:
-        pass
+    await SecondaryFunctions().del_message(answer)
 
 
 @dp.message_handler(filters.Text(equals="Свой бот🤖"))
 async def own_bot(message: types.Message) -> None:
     await message.delete()
-
     answer = await message.answer(text=Text.own_bot, parse_mode="html")
     await sleep(30)
 
-    # На случай, если пользователь удалит раньше сообщение
-    try:
-        await bot.delete_message(message.chat.id, answer.message_id)
-    except:
-        pass
+    await SecondaryFunctions().del_message(answer)
 
 
 @dp.message_handler(filters.Text(equals="Шар предсказания🎱"))
 async def magic_ball(message: types.Message) -> None:
     await message.delete()
-
     answer = await message.answer(text=choice(Text.answer_for_magicball))
     await sleep(7)
 
-    # На случай, если пользователь удалит раньше сообщение
-    try:
-        await bot.delete_message(message.chat.id, answer.message_id)
-    except:
-        pass
+    await SecondaryFunctions().del_message(answer)
 
 
 @dp.message_handler(filters.Text(startswith=("https://youtu.be/",
@@ -169,11 +156,10 @@ async def magic_ball(message: types.Message) -> None:
                                  ignore_case=True))
 async def main(message: types.Message) -> None:
     await message.delete()
-
     answer = await message.answer("<em><b>Проверяю..</b></em>",
                                   parse_mode="html")
-    audio = YouTubeMusic(message.text)
 
+    audio = YouTubeMusic(message.text)
     if audio.response_valid == True:
         await answer.edit_text("<em><b>all Good! - Скачиваю музыку.</b></em>",
                                parse_mode="html")
@@ -192,17 +178,14 @@ async def main(message: types.Message) -> None:
     else:
         logger.error(audio.response_valid)
         await answer.edit_text(f"<em><b>No good.\nОшибка: "
-                               f"{audio.response_valid.args[0]}</b></em>",
+                               f"{audio.response_valid}</b></em>",
                                parse_mode="html")
         await sleep(10)
 
-    # На случай, если пользователь удалит раньше сообщение
-    try:
-        await bot.delete_message(message.chat.id, answer.message_id)
-    except:
-        pass  
+    await SecondaryFunctions().del_message(answer)
 
 
 if __name__ == "__main__":
     keep_alive()
-    executor.start_polling(dp, skip_updates=False, on_startup=on_startup)
+    executor.start_polling(dp, skip_updates=False,
+                           on_startup=SecondaryFunctions().on_startup)
